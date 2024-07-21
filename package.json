@@ -1,0 +1,17 @@
+{
+  "name": "world-event-map",
+  "version": "1.0.0",
+  "description": "World event map",
+  "main": "index.ts",
+  "scripts": {
+    "test": "node index.ts"
+  },
+  "author": "1maxed1",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
