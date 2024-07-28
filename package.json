@@ -4,14 +4,17 @@
   "description": "World event map",
   "main": "index.ts",
   "scripts": {
-    "test": "node index.ts"
+    "test": "node index.ts",
+    "start": "node server.ts"
   },
   "author": "1maxed1",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
   }
 }
