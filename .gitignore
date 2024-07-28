@@ -1,4 +1,4 @@
-#List of the files that shoul be ignored
+#List of the files that should be ignored
 
 node_modules
 .env
