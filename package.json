@@ -4,8 +4,8 @@
   "description": "World event map",
   "main": "index.ts",
   "scripts": {
-    "test": "node index.ts",
-    "start": "node server.ts"
+    "test": "node src/index.ts",
+    "start": "node src/server.ts"
   },
   "author": "1maxed1",
   "license": "ISC",
