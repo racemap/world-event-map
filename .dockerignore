@@ -1,0 +1,6 @@
+#Ignores specified files 
+.dockerignore
+.env
+.gitignore
+Dockerfile
+README.md
