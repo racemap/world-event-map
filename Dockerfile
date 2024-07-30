@@ -9,9 +9,14 @@ COPY package*.json ./
 # Installing the packages
 RUN npm install
 
-#Copy the rest of the source files
+# Copy the rest of the source files
 
-COPY src/server.ts /app/src/server.ts
+COPY ./src ./src
+
+# Copy tsconfig.json
+COPY ./tsconfig.json /app/tsconfig.json
+
+EXPOSE 3000
 
 # Run the application
 CMD ["npm", "start"]
