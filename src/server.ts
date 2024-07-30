@@ -1,15 +1,31 @@
-const express = require('express');
-const dotenv = require('dotenv');
+import express, { Application } from 'express'
+import dotenv from 'dotenv'
+import { error } from 'console'
 
-dotenv.config();
+// Load environment variables from .env file
+dotenv.config()
 
-const app = express();
-const port = process.env.WEB_APP_PORT;
+const app: Application = express()
+
+// Retrieve the environment variable or choose a default variable
+const port: Number = parseInt(process.env.WEB_APP_PORT) || 3000
+
+//Might later add a default ip-address the server listens on
+
+// Start the server after successfully storing the prepared data
+// Resolve the promise from startup_request_api_info() after wwhich the node express server should be started
+app.use(express.json({ limit: '50mb' }))
 
 app.get('/', (req, res) => {
-  res.send('Hello world');
-});
+    res.send('Server running')
+})
 
+// Add listen_ip here
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+    if (error) {
+        console.log('Error' + error)
+    }
+    console.log(
+        `Server is running at http://localhost:${port} inside the container`
+    )
+})

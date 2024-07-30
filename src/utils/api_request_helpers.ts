@@ -4,6 +4,13 @@ import dotenv from 'dotenv'
 // Load environment variables from .env file
 dotenv.config()
 
+//Interfaces
+
+export interface Racemap_event {
+    name: string
+    id: string
+}
+
 // Function that creates an auth header for requests
 export const generate_authentication_header = async (): Promise<string> => {
     // Retrieve the environment variable
@@ -30,20 +37,48 @@ const return_data_from_api_endpoint = async (
     let header: Headers = new Headers({
         Authorization: `Basic ${token}`,
     })
-    const data = await fetch(url, { method: 'GET', headers: header })
-    console.log(data)
-    return data
+    const response_data = await fetch(url, { method: 'GET', headers: header })
+    console.log('Response data')
+
+    // response_data includes the status, headers and the body
+    console.log(response_data)
+    return response_data
 }
 
 // Function that uses return_data_from_api_endpoint to collect
-export const return_entirety_of_events = async (): Promise<void> => {
+export const return_entirety_of_events = async (): Promise<Racemap_event[]> => {
+    // Setting up a dictionary that maps the names of the events with corresponding ids
+
+    let entirety_of_events: Racemap_event[] = []
+
+    // Calling the function that returns a Promise<Response>
     return_data_from_api_endpoint(process.env.ALL_EVENTS_URL_ENDPOINT)
-        .then((response) => {
-            response.json()
+        .then((response: Response) => {
+            if (!response.ok) {
+                console.log('Network response was not okay')
+            }
+            return response.json()
         })
-        .then((json) => {
+        // Data is the body of the response
+        .then((data) => {
             console.log('Response from all Events')
-            console.log(json)
+            // For future expansions: Leave it here
+            //let event_counter: number = 0
+
+            // Reduces the information stored in the response object
+            // Usefull for further dedvelopment
+            for (const index of data) {
+                entirety_of_events.push({ name: index.name, id: index.id })
+                //event_counter += 1
+            }
         })
-        .catch((error) => console.log('Error ', error))
+        .catch((error) => {
+            // Added empty return statement just in case there is an error
+            console.log('Error in the fetch operation ', error)
+
+            //Retuns an empty array
+            return entirety_of_events
+        })
+
+    return entirety_of_events
 }
