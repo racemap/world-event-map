@@ -1,0 +1,6 @@
+#Ignores specified files
+.env
+.gitignore
+node_modules
+Dockerfile
+README.md
