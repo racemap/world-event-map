@@ -2,6 +2,10 @@ import express, { Application } from 'express'
 import dotenv from 'dotenv'
 import { error } from 'console'
 
+//Startup function
+
+import { startup_request_api_info } from '../src/app'
+
 // Load environment variables from .env file
 dotenv.config()
 
@@ -13,7 +17,8 @@ const port: Number = parseInt(process.env.WEB_APP_PORT) || 3000
 //Might later add a default ip-address the server listens on
 
 // Start the server after successfully storing the prepared data
-// Resolve the promise from startup_request_api_info() after wwhich the node express server should be started
+// Resolve the promise from startup_request_api_info() after which the node express server should be started
+
 app.use(express.json({ limit: '50mb' }))
 
 app.get('/', (req, res) => {
