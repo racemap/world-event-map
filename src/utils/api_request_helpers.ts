@@ -8,7 +8,13 @@ dotenv.config()
 
 export interface Racemap_event {
     name: string
-    id: string
+    r_id: string
+}
+
+export interface Event_shadow_coordinates {
+    event_id: string
+    lat: number
+    lng: number
 }
 
 // Function that creates an auth header for requests
@@ -38,47 +44,81 @@ const return_data_from_api_endpoint = async (
         Authorization: `Basic ${token}`,
     })
     const response_data = await fetch(url, { method: 'GET', headers: header })
-    console.log('Response data')
-
     // response_data includes the status, headers and the body
-    console.log(response_data)
     return response_data
 }
 
 // Function that uses return_data_from_api_endpoint to collect
 export const return_entirety_of_events = async (): Promise<Racemap_event[]> => {
     // Setting up a dictionary that maps the names of the events with corresponding ids
-
     let entirety_of_events: Racemap_event[] = []
 
-    // Calling the function that returns a Promise<Response>
-    return_data_from_api_endpoint(process.env.ALL_EVENTS_URL_ENDPOINT)
-        .then((response: Response) => {
-            if (!response.ok) {
-                console.log('Network response was not okay')
-            }
-            return response.json()
-        })
-        // Data is the body of the response
-        .then((data) => {
-            console.log('Response from all Events')
-            // For future expansions: Leave it here
-            //let event_counter: number = 0
+    try {
+        // Calling the async function that returns a Promise<Response>
+        const response = await return_data_from_api_endpoint(
+            process.env.ALL_EVENTS_URL_ENDPOINT as string
+        )
 
-            // Reduces the information stored in the response object
-            // Usefull for further dedvelopment
-            for (const index of data) {
-                entirety_of_events.push({ name: index.name, id: index.id })
-                //event_counter += 1
-            }
-        })
-        .catch((error) => {
-            // Added empty return statement just in case there is an error
-            console.log('Error in the fetch operation ', error)
+        if (!response.ok) {
+            console.log('Network response was not okay (return event_id, name)')
+            return []
+        }
 
-            //Retuns an empty array
-            return entirety_of_events
-        })
+        const data = await response.json()
 
-    return entirety_of_events
+        // Looping through the response body
+        // Filtering the large response body
+        for (const index of data) {
+            entirety_of_events.push({ name: index.name, r_id: index.id })
+        }
+
+        return entirety_of_events
+
+        //Error handler
+    } catch (error) {
+        console.log('Error in the fetch operation (event_ids and names)', error)
+        // Returns an empty array
+        return []
+    }
+}
+
+export const return_location_coordiantes = async (
+    given_event_id: string
+): Promise<Event_shadow_coordinates> => {
+    let matched_event_id_and_country: Event_shadow_coordinates
+
+    const url = process.env.EVENT_URL_ENDPOINT.replace(
+        ':event_id',
+        given_event_id
+    )
+
+    try {
+        // Calling the async function that returns a Promise<Response>
+        console.log('Cooridnates of event: ' + given_event_id)
+        const response = await return_data_from_api_endpoint(url)
+        if (!response.ok) {
+            throw new Error(
+                `Event ${given_event_id} was not found. Network error `
+            )
+        }
+
+        const data = await response.json()
+        // Returns an array that stores [long, lat, number]
+
+        const coordinates_of_event = data.features[0].geometry.coordinates[0]
+
+        console.log(coordinates_of_event)
+
+        matched_event_id_and_country = {
+            event_id: given_event_id,
+            lat: coordinates_of_event[1],
+            lng: coordinates_of_event[0],
+        }
+        return matched_event_id_and_country
+    } catch (error) {
+        console.log(
+            'Error in the fetch operation (start coordinates of each event)',
+            error
+        )
+    }
 }
