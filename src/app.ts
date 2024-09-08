@@ -26,4 +26,4 @@ export const startup_request_api_info = async () => {
     console.log(entirety_of_events)
 }
 
-// startup_request_api_info()
+startup_request_api_info()
