@@ -4,17 +4,17 @@ FROM node:22-bookworm
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the container
-COPY package*.json ./
+COPY package.json ./
+COPY package-lock.json ./
+
+# Copy tsconfig.json
+COPY tsconfig.json /app/tsconfig.json
 
 # Installing the packages
 RUN npm install
 
 # Copy the rest of the source files
-
 COPY ./src ./src
-
-# Copy tsconfig.json
-COPY ./tsconfig.json /app/tsconfig.json
 
 EXPOSE 3000
 

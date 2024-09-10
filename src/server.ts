@@ -2,17 +2,13 @@ import express, { Application } from 'express'
 import dotenv from 'dotenv'
 import { error } from 'console'
 
-//Startup function
-
-import { startupRequestApiInfo } from '../src/app'
-
 // Load environment variables from .env file
 dotenv.config()
 
 const app: Application = express()
 
 // Retrieve the environment variable or choose a default variable
-const port: Number = parseInt(process.env.WEB_APP_PORT) || 3000
+const port: Number = 3050
 
 //Might later add a default ip-address the server listens on
 

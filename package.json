@@ -1,8 +1,8 @@
 {
-  "name": "y",
+  "name": "world-event-map",
   "version": "1.0.0",
   "description": "World event map",
-  "main": "src/server.ts",
+  "main": "src/app.ts",
   "scripts": {
     "start": "ts-node src/app.ts"
   },
