@@ -1,10 +1,9 @@
 {
-  "name": "world-event-map",
+  "name": "y",
   "version": "1.0.0",
   "description": "World event map",
   "main": "src/server.ts",
   "scripts": {
-    "test": "ts-node src/index.ts",
     "start": "ts-node src/server.ts"
   },
   "author": "1maxed1",
