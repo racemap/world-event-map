@@ -4,7 +4,7 @@ import { error } from 'console'
 
 //Startup function
 
-import { startup_request_api_info } from '../src/app'
+import { startupRequestApiInfo } from '../src/app'
 
 // Load environment variables from .env file
 dotenv.config()

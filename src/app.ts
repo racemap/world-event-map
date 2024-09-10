@@ -1,11 +1,12 @@
 import {
     return_location_coordiantes,
-    return_entirety_of_events,
+    returnEntiretyOfEvents,
     Event_shadow_coordinates,
     Racemap_event,
 } from '../src/utils/api_request_helpers'
 
-export const startup_request_api_info = async () => {
+export const startupRequestApiInfo = async () => {
+    // Entirety if events is used as a way to check if there are any new events
     const entirety_of_events: Racemap_event[] =
         await return_entirety_of_events()
 
@@ -26,4 +27,4 @@ export const startup_request_api_info = async () => {
     console.log(entirety_of_events)
 }
 
-startup_request_api_info()
+startupRequestApiInfo()

@@ -18,7 +18,7 @@ export interface Event_shadow_coordinates {
 }
 
 // Function that creates an auth header for requests
-export const generate_authentication_header = async (): Promise<string> => {
+export const generateAuthenticationHeader = async (): Promise<string> => {
     // Retrieve the environment variable
     const user_email = process.env.USER_EMAIL
     const user_password = process.env.USER_PASSWORD
@@ -36,10 +36,8 @@ export const generate_authentication_header = async (): Promise<string> => {
 }
 
 // Function that returns the data given from any API endpoint --> Multiple usecases
-const return_data_from_api_endpoint = async (
-    url: string
-): Promise<Response> => {
-    let token: string = await generate_authentication_header()
+const returnDataFromApiEndpoint = async (url: string): Promise<Response> => {
+    let token: string = await generateAuthenticationHeader()
     let header: Headers = new Headers({
         Authorization: `Basic ${token}`,
     })
@@ -49,13 +47,13 @@ const return_data_from_api_endpoint = async (
 }
 
 // Function that uses return_data_from_api_endpoint to collect
-export const return_entirety_of_events = async (): Promise<Racemap_event[]> => {
+export const returnEntiretyOfEvents = async (): Promise<Racemap_event[]> => {
     // Setting up a dictionary that maps the names of the events with corresponding ids
     let entirety_of_events: Racemap_event[] = []
 
     try {
         // Calling the async function that returns a Promise<Response>
-        const response = await return_data_from_api_endpoint(
+        const response = await returnDataFromApiEndpoint(
             process.env.ALL_EVENTS_URL_ENDPOINT as string
         )
 
@@ -82,7 +80,7 @@ export const return_entirety_of_events = async (): Promise<Racemap_event[]> => {
     }
 }
 
-export const return_location_coordiantes = async (
+export const returnLocationCoordiantes = async (
     given_event_id: string
 ): Promise<Event_shadow_coordinates> => {
     let matched_event_id_and_country: Event_shadow_coordinates
@@ -95,7 +93,7 @@ export const return_location_coordiantes = async (
     try {
         // Calling the async function that returns a Promise<Response>
         console.log('Cooridnates of event: ' + given_event_id)
-        const response = await return_data_from_api_endpoint(url)
+        const response = await returnDataFromApiEndpoint(url)
         if (!response.ok) {
             throw new Error(
                 `Event ${given_event_id} was not found. Network error `
@@ -111,6 +109,7 @@ export const return_location_coordiantes = async (
 
         matched_event_id_and_country = {
             event_id: given_event_id,
+            // Previosly
             lat: coordinates_of_event[1],
             lng: coordinates_of_event[0],
         }
