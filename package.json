@@ -4,7 +4,7 @@
   "description": "World event map",
   "main": "src/server.ts",
   "scripts": {
-    "start": "ts-node src/server.ts"
+    "start": "ts-node src/app.ts"
   },
   "author": "1maxed1",
   "license": "ISC",
