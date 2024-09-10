@@ -1,15 +1,6 @@
 import { error } from 'console'
-import dotenv from 'dotenv'
-
-// Load environment variables from .env file
-dotenv.config()
 
 //Interfaces
-
-export interface Racemap_event {
-    name: string
-    r_id: string
-}
 
 export interface Event_shadow_coordinates {
     event_id: string
@@ -18,7 +9,7 @@ export interface Event_shadow_coordinates {
 }
 
 // Function that creates an auth header for requests
-export const generateAuthenticationHeader = async (): Promise<string> => {
+export const generateAuthenticationHeader = (): string => {
     // Retrieve the environment variable
     const user_email = process.env.USER_EMAIL
     const user_password = process.env.USER_PASSWORD
@@ -37,7 +28,7 @@ export const generateAuthenticationHeader = async (): Promise<string> => {
 
 // Function that returns the data given from any API endpoint --> Multiple usecases
 const returnDataFromApiEndpoint = async (url: string): Promise<Response> => {
-    let token: string = await generateAuthenticationHeader()
+    let token: string = generateAuthenticationHeader()
     let header: Headers = new Headers({
         Authorization: `Basic ${token}`,
     })
@@ -47,57 +38,54 @@ const returnDataFromApiEndpoint = async (url: string): Promise<Response> => {
 }
 
 // Function that uses return_data_from_api_endpoint to collect
-export const returnEntiretyOfEvents = async (): Promise<Racemap_event[]> => {
+export const returnEntiretyOfEvents = async (): Promise<
+    Map<number, string>
+> => {
     // Setting up a dictionary that maps the names of the events with corresponding ids
-    let entirety_of_events: Racemap_event[] = []
+    let entirety_of_events_Map: Map<number, string> = new Map()
 
     try {
         // Calling the async function that returns a Promise<Response>
         const response = await returnDataFromApiEndpoint(
-            process.env.ALL_EVENTS_URL_ENDPOINT as string
+            'https://racemap.com/api/events?show=hidden,atomiceventsonly,activated'
         )
 
+        //If the response is not ok an error is thrown
         if (!response.ok) {
-            console.log('Network response was not okay (return event_id, name)')
-            return []
+            throw new Error('HTTP error! status: ' + response.status)
         }
 
         const data = await response.json()
 
         // Looping through the response body
         // Filtering the large response body
-        for (const index of data) {
-            entirety_of_events.push({ name: index.name, r_id: index.id })
-        }
 
-        return entirety_of_events
+        for (const entry of data) {
+            // Create a new entry to the map
+            entirety_of_events_Map[entry.id] = entry.name
+        }
+        return entirety_of_events_Map
 
         //Error handler
     } catch (error) {
-        console.log('Error in the fetch operation (event_ids and names)', error)
+        // Output error at error log
+        console.error(error.message)
         // Returns an empty array
-        return []
+        return
     }
 }
 
 export const returnLocationCoordiantes = async (
     given_event_id: string
 ): Promise<Event_shadow_coordinates> => {
-    let matched_event_id_and_country: Event_shadow_coordinates
-
-    const url = process.env.EVENT_URL_ENDPOINT.replace(
-        ':event_id',
-        given_event_id
-    )
+    const url = `https://racemap.com/api/events/${given_event_id}/geo/shadow.json`
 
     try {
         // Calling the async function that returns a Promise<Response>
         console.log('Cooridnates of event: ' + given_event_id)
         const response = await returnDataFromApiEndpoint(url)
         if (!response.ok) {
-            throw new Error(
-                `Event ${given_event_id} was not found. Network error `
-            )
+            throw new Error('HTTP error! status: ' + response.status)
         }
 
         const data = await response.json()
@@ -107,17 +95,18 @@ export const returnLocationCoordiantes = async (
 
         console.log(coordinates_of_event)
 
-        matched_event_id_and_country = {
+        const matched_event_id_and_coordinates = {
             event_id: given_event_id,
             // Previosly
             lat: coordinates_of_event[1],
             lng: coordinates_of_event[0],
         }
-        return matched_event_id_and_country
+        return matched_event_id_and_coordinates
     } catch (error) {
-        console.log(
-            'Error in the fetch operation (start coordinates of each event)',
-            error
-        )
+        // Output error at error log level
+        console.error('Error in the geoData fetch operation' + error.message)
+
+        //Return null
+        return
     }
 }
