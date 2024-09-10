@@ -2,7 +2,7 @@ import {
     returnLocationCoordiantes,
     returnEntiretyOfEvents,
     Event_shadow_coordinates,
-} from '../src/utils/api_request_helpers'
+} from './utils/api_request_helpers'
 
 import dotenv from 'dotenv'
 

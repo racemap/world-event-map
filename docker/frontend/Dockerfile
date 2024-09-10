@@ -12,7 +12,7 @@ COPY package-lock.json ./
 RUN npm install
 
 # Copy the rest of the application code
-COPY src/dapp src/dapp
+COPY src/frontend src/frontend
 
 # Build the application
 RUN npm run build 
@@ -34,7 +34,7 @@ COPY package-lock.json ./
 RUN npm install --only=production
 
 # Expose port 4000
-EXPOSE 4000
+EXPOSE 3000
 
 # Start the application
 CMD ["npm", "start"]

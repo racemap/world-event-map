@@ -1,0 +1,38 @@
+services:
+  dapp:
+    build:
+      context: ./docker/dapp
+    ports:
+      - "${DOCKER_SERVER_PORT_FORWARD}:${SERVER_PORT}"
+    env_file:
+      - .env
+    networks:
+      - ${NETWORK_NAME}
+    volumes:
+      - backend_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${SERVER_PORT}/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./docker/frontend
+    ports:
+      - "${DOCKER_CLIENT_PORT_FORWARD}:${CLIENT_PORT}"
+    env_file:
+      - .env
+    depends_on:
+      dapp:
+        condition: service_healthy
+    networks:
+      - ${NETWORK_NAME}
+
+volumes:
+  backend_data:
+
+networks:
+  appnetwork:
+    ipam:
+      driver: default

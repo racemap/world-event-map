@@ -1,10 +1,10 @@
 {
-    "name": "world-event-map",
+    "name": "world-event-map-frontend",
     "version": "1.0.0",
     "description": "World event map",
-    "main": "src/server.ts",
+    "main": "src/web/webserver.ts",
     "scripts": {
-      "start": "ts-node src/server.ts"
+      "start": "ts-node src/web/webserver.ts"
     },
     "author": "1maxed1",
     "license": "ISC",
