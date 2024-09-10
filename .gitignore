@@ -1,1 +1,7 @@
-#List of the files that shoul be ignored
+#List of the files that should be ignored
+node_modules
+.env
+
+# Ignore everything in a specific folder except one file
+dataStorage/*
+!dataStorage/comment.txt
