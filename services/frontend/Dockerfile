@@ -6,7 +6,6 @@ RUN apt-get update -y && apt-get upgrade -y
 # Set the working directory
 WORKDIR /app
 
-
 # Copy package.json and package-lock.json first for better caching
 COPY package*.json ./
 COPY tsconfig.json ./tsconfig.json
@@ -16,7 +15,7 @@ COPY tsconfig.json ./tsconfig.json
 RUN npm install
 
 # Copy the rest of the application code
-COPY ./src/frontend ./src/frontend
+COPY src/frontend ./src/
 
 # Build the application
 # RUN npm build
@@ -38,6 +37,9 @@ COPY package*.json ./
 
 # Install only production dependencies
 RUN npm install --only=production
+
+#Test
+RUN echo "File system at build time:" && ls -R /
 
 # Expose port 3000
 EXPOSE 3000

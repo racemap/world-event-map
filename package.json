@@ -2,11 +2,14 @@
   "name": "world-event-map-backend",
   "version": "1.0.0",
   "description": "World event map",
-  "main": "src/dapp/app.ts",
   "scripts": {
-    "startwebserver": "ts-node src/frontend/webserver.ts",
-    "build": "tsc",
-    "startbackendserver": "ts-node src/dapp/backendserver.ts"
+    "webserver": "ts-node app/frontend/source/frontend/webserver.ts",
+    "startwebserver": "node app/source/frontend/webserver.js",
+    
+    "backendserver": "ts-node app/dapp/source/backendserver.ts",
+    "startbackendserver": "node app/source/backendserver.js",
+
+    "build": "tsc"
   },
   "author": "1maxed1",
   "license": "ISC",

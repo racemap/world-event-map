@@ -2,7 +2,7 @@ services:
   dapp:
     build:
       context: .
-      dockerfile: ./docker/dapp/Dockerfile
+      dockerfile: ./services/dapp/Dockerfile
     ports:
       - "${DOCKER_SERVER_PORT_FORWARD}:${SERVER_PORT}"
     env_file:
@@ -20,7 +20,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: ./docker/frontend/Dockerfile
+      dockerfile: ./services/frontend/Dockerfile
     ports:
       - "${DOCKER_CLIENT_PORT_FORWARD}:${CLIENT_PORT}"
     env_file:
