@@ -9,32 +9,55 @@ export interface Event_shadow_coordinates {
 }
 
 // Function that creates an auth header for requests
-export const generateAuthenticationHeader = (): string => {
-    // Retrieve the environment variable
-    const user_email = process.env.USER_EMAIL
-    const user_password = process.env.USER_PASSWORD
+export const generateAuthenticationHeader = (): string | null => {
+    try {
+        // Retrieve the environment variable
+        const user_email = process.env.USER_EMAIL
+        const user_password = process.env.USER_PASSWORD
 
-    // Merging the environment variables into an Authorization header to send with the request
-    // Exporting that it can be used in various requests
-    // "Authorization": `Basic ${credentials}`
-    const credentials = Buffer.from(`${user_email}:${user_password}`, 'utf-8')
+        if (!user_email || !user_password)
+            throw new Error('USER_NAME or USER_PASSWORD not set')
 
-    //Convert the Buffer to a Base64-encoded string
-    const base64Credentials = credentials.toString('base64')
+        // Merging the environment variables into an Authorization header to send with the request
+        // Exporting that it can be used in various requests
+        // "Authorization": `Basic ${credentials}`
+        const credentials = Buffer.from(
+            `${user_email}:${user_password}`,
+            'utf-8'
+        )
 
-    console.log('Creditals: ' + base64Credentials)
-    return base64Credentials
+        //Convert the Buffer to a Base64-encoded string
+        const base64Credentials = credentials.toString('base64')
+        return base64Credentials
+    } catch (error) {
+        console.error(getErrorMessage(error))
+        return null
+    }
 }
 
 // Function that returns the data given from any API endpoint --> Multiple usecases
 const returnDataFromApiEndpoint = async (url: string): Promise<Response> => {
-    let token: string = generateAuthenticationHeader()
+    let token: string | null = generateAuthenticationHeader()
     let header: Headers = new Headers({
         Authorization: `Basic ${token}`,
     })
-    const response_data = await fetch(url, { method: 'GET', headers: header })
-    // response_data includes the status, headers and the body
-    return response_data
+    try {
+        if (token == null) {
+            throw new Error('Token generation was not successful')
+        }
+        const response_data = await fetch(url, {
+            method: 'GET',
+            headers: header,
+        })
+        // response_data includes the status, headers and the body
+        return response_data
+    } catch (error) {
+        console.error(getErrorMessage(error))
+        return new Response('Not Found', {
+            status: 404,
+            statusText: 'Not Found',
+        })
+    }
 }
 
 // Function that uses return_data_from_api_endpoint to collect
@@ -42,7 +65,7 @@ export const returnEntiretyOfEvents = async (): Promise<
     Map<number, string>
 > => {
     // Setting up a dictionary that maps the names of the events with corresponding ids
-    let entirety_of_events_Map: Map<number, string> = new Map()
+    let entiretyOfEventsMap: Map<number, string> = new Map()
 
     try {
         // Calling the async function that returns a Promise<Response>
@@ -62,9 +85,9 @@ export const returnEntiretyOfEvents = async (): Promise<
 
         for (const entry of data) {
             // Create a new entry to the map
-            entirety_of_events_Map.set(entry.id, entry.name)
+            entiretyOfEventsMap.set(entry.id, entry.name)
         }
-        return entirety_of_events_Map
+        return entiretyOfEventsMap
 
         //Error handler
     } catch (error) {

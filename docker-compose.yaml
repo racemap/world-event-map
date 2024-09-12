@@ -5,8 +5,6 @@ services:
       dockerfile: ./services/dapp/Dockerfile
     ports:
       - "${DOCKER_SERVER_PORT_FORWARD}:${SERVER_PORT}"
-    env_file:
-      - .env
     networks:
       - ${NETWORK_NAME}
     volumes:
@@ -23,8 +21,6 @@ services:
       dockerfile: ./services/frontend/Dockerfile
     ports:
       - "${DOCKER_CLIENT_PORT_FORWARD}:${CLIENT_PORT}"
-    env_file:
-      - .env
     depends_on:
       dapp:
         condition: service_healthy
@@ -36,5 +32,3 @@ volumes:
 
 networks:
   appnetwork:
-    ipam:
-      driver: default
