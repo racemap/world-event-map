@@ -9,7 +9,7 @@ const app: Application = express()
 
 // Retrieve the environment variable or use a default value
 const port: number = Number(process.env.CLIENT_PORT) || 3000 // Default to 3000 if not set
-const host: string = process.env.CLIENT_IP || '0.0.0.0' // Default to 0.0.0.0 to allow external access
+const host: string = process.env.CLIENT_IP || '127.0.0.1'
 
 app.use(express.json({ limit: '50mb' }))
 

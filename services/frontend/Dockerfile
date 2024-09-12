@@ -1,48 +1,40 @@
 # Stage 1: Build the application
-FROM node:22-bookworm AS build
-
-RUN apt-get update -y && apt-get upgrade -y
+FROM node:latest AS build
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /usr/app
 
 # Copy package.json and package-lock.json first for better caching
-COPY package*.json ./
-COPY tsconfig.json ./tsconfig.json
-
+COPY package*.json .
 
 # Install dependencies
 RUN npm install
 
 # Copy the rest of the application code
-COPY src/frontend ./src/
+COPY ./source/frontend ./source
+
+COPY tsconfig.json /usr/app/tsconfig.json
 
 # Build the application
-# RUN npm build
-RUN npx tsc -p tsconfig.json
+RUN npx tsc
 
-RUN ls -la /app
-
-# Stage 2: Create the final image
-FROM node:22-bookworm AS final
+#Final image
+FROM node:latest AS final
 
 # Set the working directory
-WORKDIR /app
+
+WORKDIR /usr/app
 
 # Copy the built files from the builder stage
-COPY --from=build /app/dist ./dist
+COPY --from=build /usr/app/dist ./source
 
-# Copy package.json and package-lock.json for production dependencies
-COPY package*.json ./
+COPY package*.json .
 
-# Install only production dependencies
-RUN npm install --only=production
+# Install dependencies
+RUN npm install
 
-#Test
-RUN echo "File system at build time:" && ls -R /
+WORKDIR /usr/app
 
-# Expose port 3000
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "run", "startwebserver"]
+CMD ["npm", "run", "startws"]

@@ -1,45 +1,40 @@
 # Stage 1: Build the application
-FROM node:22-bookworm AS build
+FROM node:latest AS build
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /usr/app
 
 # Copy package.json and package-lock.json first for better caching
-COPY package*.json ./
-COPY tsconfig.json app/tsconfig.json
+COPY package*.json .
 
 # Install dependencies
 RUN npm install
 
 # Copy the rest of the application code
-COPY source/dapp app/source
+COPY ./source/dapp ./source
+
+COPY tsconfig.json /usr/app/tsconfig.json
 
 # Build the application
-# RUN npm build
-RUN npx tsc -p app/tsconfig.json
+RUN npx tsc
 
-RUN ls -la /app
-
-# Stage 2: Create the final image
-FROM node:22-bookworm AS final
+#Final image
+FROM node:latest AS final
 
 # Set the working directory
-WORKDIR /app
+
+WORKDIR /usr/app
 
 # Copy the built files from the builder stage
-COPY --from=build /app/dist ./dist
+COPY --from=build /usr/app/dist ./source
 
-# Copy package.json and package-lock.json for production dependencies
-COPY package*.json ./
+COPY package*.json .
 
-# Install only production dependencies
-RUN npm install --only=production
+# Install dependencies
+RUN npm install
 
-# Test
-RUN echo "File system at build time:" && ls -R /
+WORKDIR /usr/app
 
-# Expose port 4000
 EXPOSE 4000
 
-# Start the application
-CMD ["npm", "run", "startbackendserver"]
+CMD ["npm", "run", "startbs"]

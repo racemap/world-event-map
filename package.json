@@ -3,13 +3,11 @@
   "version": "1.0.0",
   "description": "World event map",
   "scripts": {
-    "webserver": "ts-node app/frontend/source/frontend/webserver.ts",
-    "startwebserver": "node app/source/frontend/webserver.js",
-    
-    "backendserver": "ts-node app/dapp/source/backendserver.ts",
-    "startbackendserver": "node app/source/backendserver.js",
-
-    "build": "tsc"
+    "startwebserver": "ts-node src/frontend/webserver.ts",
+    "build": "tsc",
+    "startbackendserver": "ts-node src/dapp/backendserver.ts",
+    "startbs": "node /usr/app/source/backendserver.js",
+    "startws": "node /usr/app/source/webserver.js"
   },
   "author": "1maxed1",
   "license": "ISC",

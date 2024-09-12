@@ -62,22 +62,22 @@ export const returnEntiretyOfEvents = async (): Promise<
 
         for (const entry of data) {
             // Create a new entry to the map
-            entirety_of_events_Map[entry.id] = entry.name
+            entirety_of_events_Map.set(entry.id, entry.name)
         }
         return entirety_of_events_Map
 
         //Error handler
     } catch (error) {
         // Output error at error log
-        console.error(error.message)
+        console.error(getErrorMessage(error))
         // Returns an empty array
-        return
+        return new Map<never, never>()
     }
 }
 
 export const returnLocationCoordiantes = async (
     given_event_id: string
-): Promise<Event_shadow_coordinates> => {
+): Promise<Event_shadow_coordinates | null> => {
     const url = `https://racemap.com/api/events/${given_event_id}/geo/shadow.json`
 
     try {
@@ -104,9 +104,15 @@ export const returnLocationCoordiantes = async (
         return matched_event_id_and_coordinates
     } catch (error) {
         // Output error at error log level
-        console.error('Error in the geoData fetch operation' + error.message)
+        console.error(getErrorMessage(error))
 
-        //Return null
-        return
+        //Return null --> Could not fetch the data in any way
+        return null
     }
+}
+
+// Utility function
+function getErrorMessage(error: unknown) {
+    if (error instanceof Error) return error.message
+    return String(error)
 }
